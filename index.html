@@ -8,10 +8,13 @@
   </head>
   <body>
     <main class="container" x-data>
-      <h1>Daniel Innes</h1>
+      <span x-text="$store.authenticated"></span>
 
-      <div
-        x-data="{
+      <template x-if="$store.authenticated">
+        <h1>Daniel Innes</h1>
+
+        <div
+          x-data="{
           post: {
             type: 'none',
             title: '',
@@ -20,138 +23,132 @@
             visibility: 'friends'
           }
         }"
-        x-init="$watch('post.type', () => $refs.modal.showModal())"
-      >
-        <div class="grid">
-          <div @click="post.type = 'text'">Text</div>
-          <div @click="post.type = 'photo'">Photo</div>
-          <div @click="post.type = 'video'">Video</div>
-          <div @click="post.type = 'audio'">Audio</div>
-          <div @click="post.type = 'quote'">Quote</div>
-        </div>
-        <div x-text="JSON.stringify(post)"></div>
-        <div x-text="post.date"></div>
-        <dialog x-ref="modal">
-          <article>
-            <header>
-              <a
-                href="#close"
-                aria-label="Close"
-                class="close"
-                @click="$refs.modal.close()"
-              ></a>
-              <h2 x-text="'New ' + post.type + ' post'"></h2>
-            </header>
-            <h2 contenteditable x-model="post.title">Title (optional)</h2>
-            <div contenteditable x-model="post.text">Text (optional)</div>
-            <div>files</div>
-            <div class="grid">
-              <label for="date">
-                Post Date
-                <input type="datetime-local" x-model="post.date" name="date" />
-              </label>
-
-              <details role="list">
-                <!-- get the first letter and capitalise it -->
-                <summary
-                  aria-haspopup="listbox"
-                  x-text="post.visibility[0].toUpperCase() + post.visibility.slice(1)"
-                ></summary>
-                <ul role="listbox">
-                  <li>
-                    <label for="public">
-                      <input
-                        type="radio"
-                        id="public"
-                        name="visibility"
-                        value="public"
-                        x-model="post.visibility"
-                      />
-                      Public
-                    </label>
-                  </li>
-                  <li>
-                    <label for="medium">
-                      <input
-                        type="radio"
-                        id="friends"
-                        name="visibility"
-                        value="friends"
-                        checked
-                        x-model="post.visibility"
-                      />
-                      Friends
-                    </label>
-                  </li>
-                  <li>
-                    <label for="family">
-                      <input
-                        type="radio"
-                        id="family"
-                        name="visibility"
-                        value="family"
-                        x-model="post.visibility"
-                      />
-                      Family
-                    </label>
-                  </li>
-                </ul>
-              </details>
-            </div>
-
-            <footer>
+          x-init="$watch('post.type', () => $refs.modal.showModal())"
+          x-if="$store.authenticated"
+        >
+          <div class="grid">
+            <div @click="post.type = 'text'">Text</div>
+            <div @click="post.type = 'photo'">Photo</div>
+            <div @click="post.type = 'video'">Video</div>
+            <div @click="post.type = 'audio'">Audio</div>
+            <div @click="post.type = 'quote'">Quote</div>
+          </div>
+          <div x-text="JSON.stringify(post)"></div>
+          <div x-text="post.date"></div>
+          <dialog x-ref="modal">
+            <article>
+              <header>
+                <a
+                  href="#close"
+                  aria-label="Close"
+                  class="close"
+                  @click="$refs.modal.close()"
+                ></a>
+                <h2 x-text="'New ' + post.type + ' post'"></h2>
+              </header>
+              <h2 contenteditable x-model="post.title">Title (optional)</h2>
+              <div contenteditable x-model="post.text">Text (optional)</div>
+              <div>files</div>
               <div class="grid">
-                <button type="reset">Reset</button>
-                <button type="submit">Submit</button>
+                <label for="date">
+                  Post Date
+                  <input
+                    type="datetime-local"
+                    x-model="post.date"
+                    name="date"
+                  />
+                </label>
+
+                <details role="list">
+                  <!-- get the first letter and capitalise it -->
+                  <summary
+                    aria-haspopup="listbox"
+                    x-text="post.visibility[0].toUpperCase() + post.visibility.slice(1)"
+                  ></summary>
+                  <ul role="listbox">
+                    <li>
+                      <label for="public">
+                        <input
+                          type="radio"
+                          id="public"
+                          name="visibility"
+                          value="public"
+                          x-model="post.visibility"
+                        />
+                        Public
+                      </label>
+                    </li>
+                    <li>
+                      <label for="medium">
+                        <input
+                          type="radio"
+                          id="friends"
+                          name="visibility"
+                          value="friends"
+                          checked
+                          x-model="post.visibility"
+                        />
+                        Friends
+                      </label>
+                    </li>
+                    <li>
+                      <label for="family">
+                        <input
+                          type="radio"
+                          id="family"
+                          name="visibility"
+                          value="family"
+                          x-model="post.visibility"
+                        />
+                        Family
+                      </label>
+                    </li>
+                  </ul>
+                </details>
               </div>
-            </footer>
-          </article>
-        </dialog>
-      </div>
-      <div
-        x-data="{ posts: [] }"
-        x-init="{ data: posts } = await (await fetch('https://api.traist.co.uk/items/posts?fields=*,files.*')).json()"
-      >
-        <template x-for="post in posts">
-          <article>
-            <h1 x-text="post.title" x-show="post.title"></h1>
-            <div x-text="post.text" x-show="post.text"></div>
-            <template x-if="post.type='photo'">
-              <div
-                x-data="{
-        muuri: null,
-        refreshGrid: function () {
-            this.muuri.refreshItems().layout();
-        }
-    }"
-                @load.window="refreshGrid"
-                x-init="
-            muuri = new Muuri(
-            $refs['muuri-grid'],
-                {
-                    layout: {
-                        fillGaps: false,
-                    },
-                    layoutDuration: 600,
-                    dragEnabled: true,
-                }
-            );
-    "
-              >
-                <div x-ref="muuri-grid" style="width: 100%" class="muuri-grid">
-                  <template x-for="photo in post.files">
-                    <img
-                      x-bind:src="'https://api.traist.co.uk/assets/' + photo.directus_files_id"
-                      class="muuri-item"
-                    />
-                  </template>
+
+              <footer>
+                <div class="grid">
+                  <button type="reset">Reset</button>
+                  <button type="submit">Submit</button>
                 </div>
-              </div>
-            </template>
-          </article>
-        </template>
-        <div x-text="JSON.stringify(posts)"></div>
-      </div>
+              </footer>
+            </article>
+          </dialog>
+        </div>
+        <div>
+          <template x-for="post in $store.posts?.data">
+            <article>
+              <h1 x-text="post.title" x-show="post.title"></h1>
+              <div x-text="post.text" x-show="post.text"></div>
+              <template x-if="post.type='photo'">
+                <template x-for="photo in post.files">
+                  <img
+                    x-bind:src="'https://api.traist.co.uk/assets/' + photo.directus_files_id"
+                    class="muuri-item"
+                  />
+                </template>
+              </template>
+            </article>
+          </template>
+          <div x-text="JSON.stringify($store.posts?.data)"></div>
+        </div>
+      </template>
+
+      <template x-if="!$store.authenticated">
+        <h1>Log In</h1>
+        <form x-data="{ email: '', password: ''}">
+          <label for="email">
+            Email
+            <input type="email" name="email" x-model="email" />
+          </label>
+          <label for="password"
+            >Password
+            <input type="password" name="password" x-model="password" />
+          </label>
+          <button type="submit">Submit</button>
+        </form>
+      </template>
     </main>
     <script type="module" src="/main.js"></script>
   </body>
