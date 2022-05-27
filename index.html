@@ -4,13 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <link href="./style.css" rel="stylesheet" />
+    <link
+      href="https://api.fontshare.com/css?f[]=bespoke-slab@1&f[]=bespoke-serif@1&f[]=bespoke-sans@1&display=swap"
+      rel="stylesheet"
+    />
+    <title>Daniel Innes</title>
   </head>
-  <body>
-    <main class="container" x-data>
+  <body class="flex flex-col font-serif">
+    <main class="max-w-prose mx-auto pt-8 w-3/4 lg:w-full" x-data>
       <template x-if="$store?.authenticated">
         <div>
-          <h1>Daniel Innes</h1>
+          <h1 class="font-heading font-bold text-4xl">Daniel Innes</h1>
 
           <div
             x-data="{
@@ -18,113 +23,231 @@
             type: 'none',
             title: '',
             text: '',
-            date: '',
-            visibility: 'friends'
-          }
+            date: new Date().toISOString().slice(0,-8),
+            visibility: 'friends',
+            files: []
+          },
+          modalOpen: false
         }"
-            x-init="$watch('post.type', () => $refs.modal.showModal())"
+            x-init="$watch('post.type', () => $refs.modal.showModal());"
+            class="font-sans"
           >
-            <div class="grid">
-              <div @click="post.type = 'text'">Text</div>
-              <div @click="post.type = 'photo'">Photo</div>
-              <div @click="post.type = 'video'">Video</div>
-              <div @click="post.type = 'audio'">Audio</div>
-              <div @click="post.type = 'quote'">Quote</div>
+            <div class="grid grid-cols-5 my-8">
+              <div @click.stop="post.type = 'text'">Text</div>
+              <div @click.stop="post.type = 'photo'">Photo</div>
+              <div @click.stop="post.type = 'video'">Video</div>
+              <div @click.stop="post.type = 'audio'">Audio</div>
+              <div @click.stop="post.type = 'quote'">Quote</div>
             </div>
-            <div x-text="JSON.stringify(post)"></div>
-            <div x-text="post.date"></div>
-            <dialog x-ref="modal">
-              <article>
-                <header>
-                  <a
-                    href="#close"
-                    aria-label="Close"
-                    class="close"
-                    @click="$refs.modal.close()"
-                  ></a>
-                  <h2 x-text="'New ' + post.type + ' post'"></h2>
+            <dialog
+              x-ref="modal"
+              @click="$refs.modal.close()"
+              class="dialog p-0 max-w-prose"
+            >
+              <article class="rounded" @click.stop>
+                <header class="bg-emerald-100 shadow-lg shadow-emerald-500/20">
+                  <div class="p-8 flex justify-between items-center">
+                    <h2
+                      class="font-bold text-3xl"
+                      x-text="'New ' + post.type + ' post'"
+                    ></h2>
+                    <a
+                      href="#close"
+                      aria-label="Close"
+                      class="
+                        px-2
+                        text-4xl
+                        focus:outline-none
+                        active:outline-none
+                      "
+                      @click="$refs.modal.close()"
+                      >&times;</a
+                    >
+                  </div>
                 </header>
-                <h2 contenteditable x-model="post.title">Title (optional)</h2>
-                <div contenteditable x-model="post.text">Text (optional)</div>
-                <div>files</div>
-                <div class="grid">
-                  <label for="date">
-                    Post Date
+                <div class="p-4">
+                  <input
+                    x-model="post.title"
+                    class="
+                      block
+                      text-4xl
+                      w-full
+                      my-4
+                      p-2
+                      focus:border-b-2
+                      focus:border-emerald-200
+                      focus:outline-none
+                    "
+                    placeholder="Title (optional)"
+                  />
+
+                  <textarea
+                    x-model="post.text"
+                    class="
+                      block
+                      w-full
+                      my-4
+                      p-2
+                      focus:border-b-2
+                      focus:border-emerald-200
+                      focus:outline-none
+                    "
+                    placeholder="Text (optional)"
+                    rows="5"
+                  ></textarea>
+                  <div
+                    class="
+                      block
+                      w-full
+                      py-2
+                      px-3
+                      my-4
+                      relative
+                      appearance-none
+                      border-4 border-emerald-200 border-dashed
+                      rounded
+                      bg-gray-50
+                      hover:border-emerald-500
+                      transition-colors
+                      duration-200
+                    "
+                  >
                     <input
-                      type="datetime-local"
-                      x-model="post.date"
-                      name="date"
+                      type="file"
+                      multiple
+                      x-on:change="post.files = [...post.files, ...$event.target.files]"
+                      class="
+                        absolute
+                        inset-0
+                        z-50
+                        m-0
+                        p-0
+                        w-full
+                        outline-none
+                        opacity-0
+                      "
                     />
-                  </label>
-
-                  <details role="list">
-                    <!-- get the first letter and capitalise it -->
-                    <summary
-                      aria-haspopup="listbox"
-                      x-text="post.visibility[0].toUpperCase() + post.visibility.slice(1)"
-                    ></summary>
-                    <ul role="listbox">
-                      <li>
-                        <label for="public">
-                          <input
-                            type="radio"
-                            id="public"
-                            name="visibility"
-                            value="public"
-                            x-model="post.visibility"
-                          />
-                          Public
-                        </label>
-                      </li>
-                      <li>
-                        <label for="medium">
-                          <input
-                            type="radio"
-                            id="friends"
-                            name="visibility"
-                            value="friends"
-                            checked
-                            x-model="post.visibility"
-                          />
-                          Friends
-                        </label>
-                      </li>
-                      <li>
-                        <label for="family">
-                          <input
-                            type="radio"
-                            id="family"
-                            name="visibility"
-                            value="family"
-                            x-model="post.visibility"
-                          />
-                          Family
-                        </label>
-                      </li>
-                    </ul>
-                  </details>
+                    <template x-if="post.files.length">
+                      <div class="grid gap-2 grid-cols-3">
+                        <template
+                          x-for="(_,index) in Array.from({ length: post?.files.length })"
+                        >
+                          <div class="flex flex-row items-center space-x-2">
+                            <img
+                              x-ref="preview"
+                              src="/"
+                              x-init="() => {
+                                var fr = new FileReader()
+                                fr.readAsDataURL(post.files[index])
+                                fr.onload = function(e) {
+                                  $el.src = this.result
+                              } 
+                            }"
+                              class="aspect-square object-cover"
+                            />
+                          </div>
+                        </template>
+                        <div
+                          class="
+                            flex flex-row
+                            items-center
+                            justify-center
+                            space-x-2
+                            aspect-square
+                            w-full
+                            bg-gray-700
+                          "
+                        >
+                          <span class="font-medium text-gray-50">+</span>
+                        </div>
+                      </div>
+                    </template>
+                    <template x-if="!post.files.length">
+                      <div
+                        class="
+                          flex flex-col
+                          space-y-2
+                          items-center
+                          justify-center
+                        "
+                      >
+                        <p>Drag your files here or click in this area.</p>
+                        <a href="javascript:void(0)" class="button button-gray"
+                          >Select a file</a
+                        >
+                      </div>
+                    </template>
+                  </div>
+                  <div class="flex items-end">
+                    <label for="date" class="w-full font-bold">
+                      Post Date
+                      <input
+                        type="datetime-local"
+                        x-model="post.date"
+                        name="date"
+                        class="
+                          block
+                          w-full
+                          mb-4
+                          p-2
+                          border-transparent border-b-2
+                          focus:border-emerald-200 focus:outline-none
+                        "
+                      />
+                    </label>
+                    <label for="visibility" class="w-full font-bold"
+                      >Visibility
+                      <select
+                        name="visibility"
+                        id="visibility"
+                        x-model="post.visibility"
+                        class="
+                          block
+                          w-full
+                          mb-4
+                          p-2
+                          border-transparent border-b-2
+                          focus:border-emerald-200
+                          outline-none
+                          bg-transparent
+                        "
+                      >
+                        <option value="friends" selected>Friends</option>
+                        <option value="family">Family</option>
+                        <option value="public">Public</option>
+                      </select>
+                    </label>
+                  </div>
                 </div>
-
-                <footer>
-                  <div class="grid">
-                    <button type="reset">Reset</button>
-                    <button type="submit">Submit</button>
+                <footer class="p-4">
+                  <div class="flex w-full">
+                    <button type="reset" class="w-full">Reset</button>
+                    <button type="submit" class="button button-emerald w-full">
+                      Submit
+                    </button>
                   </div>
                 </footer>
               </article>
             </dialog>
           </div>
+
           <template x-for="post in $store?.posts.data">
-            <article>
+            <article class="my-8 font-serif">
               <h1 x-text="post.title" x-show="post.title"></h1>
               <div x-text="post.text" x-show="post.text"></div>
-              <template x-if="post.type='photo'">
+              <template x-if="post.type==='photo'">
                 <template x-for="photo in post.files">
                   <img
-                    x-bind:src="'https://api.traist.co.uk/assets/' + photo.directus_files_id"
+                    x-bind:src="'https://cdn.statically.io/img/api.traist.co.uk/f=auto&w=600/assets/' + photo.directus_files_id + '.jpg'"
+                    class="w-full h-auto my-4 shadow-lg shadow-emerald-500/20"
                   />
                 </template>
               </template>
+              <small
+                x-text="new Date(post.post_date).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric'})"
+                class="text-emerald-600"
+                x-show="post.post_date"
+              ></small>
             </article>
           </template>
           <button @click="$store.paginate($store.page + 1)">Last</button>
@@ -132,13 +255,14 @@
       </template>
 
       <template x-if="!$store.authenticated">
-        <div>
-          <h1>Log In</h1>
+        <div class="w-full">
+          <h1 class="text-4xl font-bold mb-2 font-heading">Log In</h1>
           <form
             @submit.prevent="$store.login(email, password)"
             x-data="{ email: '', password: ''}"
+            class="flex flex-col"
           >
-            <label for="email">
+            <label for="email" class="my-4">
               Email
               <input
                 id="email"
@@ -146,9 +270,10 @@
                 name="email"
                 x-model="email"
                 required
+                class="input"
               />
             </label>
-            <label for="password"
+            <label for="password" class="my-4"
               >Password
               <input
                 id="password"
@@ -157,9 +282,10 @@
                 x-model="password"
                 required
                 minlength="8"
+                class="input"
               />
             </label>
-            <button type="submit">Submit</button>
+            <button type="submit" class="button button-emerald">Submit</button>
           </form>
         </div>
       </template>

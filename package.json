@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "watch": "npx tailwindcss -c tailwind.config.cjs -i ./main.css -o ./style.css --watch",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -14,5 +15,8 @@
     "alpinejs": "^3.10.2",
     "typescript": "^4.6.4",
     "vite": "^2.9.9"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.0.24"
   }
 }

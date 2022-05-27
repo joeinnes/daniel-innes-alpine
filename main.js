@@ -1,4 +1,3 @@
-import '@picocss/pico';
 import './style.css';
 import Alpine from 'alpinejs';
 import { Directus } from '@directus/sdk';
@@ -36,7 +35,6 @@ Alpine.store('paginate', async (param = 0) => {
 Alpine.store('login', async (email, password) => {
   await directus.auth.login({ email, password });
   Alpine.store('authenticated', true);
-  Alpine.store('authenticated', false);
   const data = await directus
     .items('posts')
     .readByQuery({ ...defaultQuery, page: Alpine.store('page') });
