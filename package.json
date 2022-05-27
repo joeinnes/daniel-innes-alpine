@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@alpinejs/intersect": "^3.10.2",
     "@directus/sdk": "^9.11.0",
-    "@picocss/pico": "^1.5.1",
     "alpinejs": "^3.10.2",
     "typescript": "^4.6.4",
     "vite": "^2.9.9"

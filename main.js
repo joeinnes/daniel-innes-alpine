@@ -1,5 +1,8 @@
 import './style.css';
 import Alpine from 'alpinejs';
+import intersect from '@alpinejs/intersect';
+
+Alpine.plugin(intersect);
 import { Directus } from '@directus/sdk';
 const directus = new Directus('https://api.traist.co.uk');
 const defaultQuery = {
@@ -13,6 +16,7 @@ Alpine.store('posts', {
     this.data = posts;
   },
   data: [],
+  allLoaded: false,
 });
 
 Alpine.store('authenticated', false);
@@ -30,7 +34,11 @@ Alpine.store('paginate', async (param = 0) => {
     .items('posts')
     .readByQuery({ ...defaultQuery, page: Alpine.store('page') });
 
-  Alpine.store('posts').setPosts(data.data);
+  if (!data.data.length) {
+    Alpine.store('posts').allLoaded = true;
+    return;
+  }
+  Alpine.store('posts').setPosts([...Alpine.store('posts').data, ...data.data]);
 });
 Alpine.store('login', async (email, password) => {
   await directus.auth.login({ email, password });

@@ -15,7 +15,7 @@
     <main class="max-w-prose mx-auto pt-8 w-3/4 lg:w-full" x-data>
       <template x-if="$store?.authenticated">
         <div>
-          <h1 class="font-heading font-bold text-4xl">Daniel Innes</h1>
+          <h1 class="font-heading font-bold text-6xl">Daniel Innes</h1>
 
           <div
             x-data="{
@@ -32,20 +32,140 @@
             x-init="$watch('post.type', () => $refs.modal.showModal());"
             class="font-sans"
           >
-            <div class="grid grid-cols-5 my-8">
-              <div @click.stop="post.type = 'text'">Text</div>
-              <div @click.stop="post.type = 'photo'">Photo</div>
-              <div @click.stop="post.type = 'video'">Video</div>
-              <div @click.stop="post.type = 'audio'">Audio</div>
-              <div @click.stop="post.type = 'quote'">Quote</div>
+            <div class="grid grid-cols-5 my-8 gap-4 items-center">
+              <div
+                @click.stop="post.type = 'text'"
+                class="
+                  action-button
+                  bg-emerald-500
+                  hover:bg-emerald-600
+                  shadow-emerald-500/20 shadow-lg
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="stroke-1 stroke-white"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
+              </div>
+              <div
+                @click.stop="post.type = 'photo'"
+                class="
+                  action-button
+                  bg-amber-400
+                  hover:bg-amber-500
+                  shadow-lg shadow-amber-500/20
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="stroke-1 stroke-white"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
+              <div
+                @click.stop="post.type = 'video'"
+                class="
+                  action-button
+                  bg-sky-500
+                  hover:bg-sky-600
+                  shadow-sky-500/20 shadow-lg
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="stroke-white stroke-1"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <div
+                @click.stop="post.type = 'audio'"
+                class="
+                  action-button
+                  bg-fuchsia-500
+                  hover:bg-fuchsia-600
+                  shadow-fuchsia-500/20 shadow-lg
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="stroke-white stroke-1"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                  />
+                </svg>
+              </div>
+              <div
+                @click.stop="post.type = 'quote'"
+                class="
+                  action-button
+                  bg-rose-500
+                  hover:bg-rose-600
+                  shadow-rose-500/20 shadow-lg
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="stroke-white stroke-1"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                  />
+                </svg>
+              </div>
             </div>
             <dialog
               x-ref="modal"
               @click="$refs.modal.close()"
               class="dialog p-0 max-w-prose"
             >
-              <article class="rounded" @click.stop>
-                <header class="bg-emerald-100 shadow-lg shadow-emerald-500/20">
+              <article
+                class="rounded"
+                @click.stop
+                x-data="{ backgrounds: {
+                text: 'bg-emerald-100 shadow-emerald-500/20',
+                photo: 'bg-amber-100 shadow-amber-500/20',
+                video: 'bg-sky-100 shadow-sky-500/20',
+                audio: 'bg-fuchsia-100 shadow-fuchsia-500/20',
+                quote: 'bg-rose-100 shadow-rose-500/20'
+                }}"
+              >
+                <header :class="backgrounds[post.type] + ' shadow-lg'">
                   <div class="p-8 flex justify-between items-center">
                     <h2
                       class="font-bold text-3xl"
@@ -74,9 +194,8 @@
                       w-full
                       my-4
                       p-2
-                      focus:border-b-2
-                      focus:border-emerald-200
-                      focus:outline-none
+                      border-b-2 border-transparent
+                      focus:border-emerald-200 focus:outline-none
                     "
                     placeholder="Title (optional)"
                   />
@@ -88,9 +207,8 @@
                       w-full
                       my-4
                       p-2
-                      focus:border-b-2
-                      focus:border-emerald-200
-                      focus:outline-none
+                      border-b-2 border-transparent
+                      focus:border-emerald-200 focus:outline-none
                     "
                     placeholder="Text (optional)"
                     rows="5"
@@ -233,7 +351,11 @@
 
           <template x-for="post in $store?.posts.data">
             <article class="my-8 font-serif">
-              <h1 x-text="post.title" x-show="post.title"></h1>
+              <h2
+                x-text="post.title"
+                x-show="post.title"
+                class="font-black text-2xl mb-2"
+              ></h2>
               <div x-text="post.text" x-show="post.text"></div>
               <template x-if="post.type==='photo'">
                 <template x-for="photo in post.files">
@@ -243,6 +365,58 @@
                   />
                 </template>
               </template>
+              <template x-if="post.type==='video'">
+                <template x-for="video in post.files">
+                  <div x-data="{showVideo: false}">
+                    <template x-if="!showVideo">
+                      <div
+                        class="
+                          aspect-video
+                          my-4
+                          shadow-lg shadow-emerald-500/20
+                          flex flex-col
+                          justify-center
+                          items-center
+                          bg-emerald-50
+                        "
+                        @click="() => showVideo = true"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-16 w-16 stroke-1 stroke-emerald-700"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                    </template>
+                    <template x-if="showVideo">
+                      <video
+                        x-bind:src="'https://api.traist.co.uk/assets/' + video.directus_files_id"
+                        class="
+                          w-full
+                          aspect-video
+                          my-4
+                          shadow-lg shadow-emerald-500/20
+                        "
+                        controls
+                        autoplay
+                        muted
+                      />
+                    </template>
+                  </div>
+                </template>
+              </template>
               <small
                 x-text="new Date(post.post_date).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric'})"
                 class="text-emerald-600"
@@ -250,7 +424,17 @@
               ></small>
             </article>
           </template>
-          <button @click="$store.paginate($store.page + 1)">Last</button>
+          <div class="text-center">
+            <button
+              @click="$store.paginate($store.page + 1)"
+              :class="'button mb-24 ' + ($store.posts.allLoaded ? 'button-disabled' : 'button-emerald')"
+              :disabled="$store.posts.allLoaded"
+              x-intersect.throttle.margin.200px="$store.paginate($store.page + 1)"
+              x-text="$store.posts.allLoaded ? 'No more posts!' : 'Load more'"
+            >
+              Load more
+            </button>
+          </div>
         </div>
       </template>
 

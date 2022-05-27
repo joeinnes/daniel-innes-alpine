@@ -39,10 +39,25 @@
     hover:bg-gray-400 hover:shadow-gray-600/20;
   }
 
-  .dialog::backdrop {
-    @apply fixed top-0 left-0 right-0 bottom-0 bg-emerald-900 opacity-80;
+  .button-disabled {
+    @apply bg-gray-200
+    text-gray-600
+    hover:bg-gray-400 hover:shadow-gray-600/20
+    cursor-not-allowed;
   }
+
+  .dialog::backdrop {
+    @apply fixed top-0 left-0 right-0 bottom-0 bg-gray-900 opacity-80;
+  }
+
   .dialog {
     @apply rounded;
+  }
+
+  .action-button {
+    @apply rounded-full p-4
+    transition-colors
+    duration-200
+    cursor-pointer max-w-full w-20 aspect-square;
   }
 }
