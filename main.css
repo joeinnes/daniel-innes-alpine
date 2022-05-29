@@ -60,4 +60,8 @@
     duration-200
     cursor-pointer max-w-full w-20 aspect-square;
   }
+
+  .image-loading {
+    @apply bg-gray-400;
+  }
 }

@@ -55,10 +55,16 @@ async function init() {
   try {
     await directus.auth
       .refresh()
-      .then((e) => {
+      .then(async (e) => {
         Alpine.store('authenticated', true);
+        const me = await directus.users.me.read();
+        if (me.role === 'b043c539-89d9-49f9-87f0-30e63908ca6f') {
+          Alpine.store('canPost', true);
+        }
       })
       .catch(() => {});
+
+    Alpine.store('page', 1);
 
     const data = await directus
       .items('posts')
@@ -70,3 +76,28 @@ async function init() {
 }
 
 init();
+
+Alpine.store('uploadFiles', async (fileForm) => {
+  try {
+    const form = new FormData(fileForm);
+    const res = await directus.files.createOne(form);
+    console.log(res);
+    if (Array.isArray(res)) {
+      return res;
+    }
+    return [res];
+  } catch (e) {}
+});
+
+Alpine.store('uploadPost', async (post) => {
+  post.post_date = new Date(post.post_date);
+  try {
+    const res = await directus.items('posts').createOne(post);
+    console.log(res);
+    if (Array.isArray(res)) {
+      return res;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+});
